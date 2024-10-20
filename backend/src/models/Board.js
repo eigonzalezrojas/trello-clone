@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../sequelize');
-const User = require('./User');
+const TempUser = require('./TempUser');
 
 const Board = sequelize.define('Board', {
   name: {
@@ -9,6 +9,6 @@ const Board = sequelize.define('Board', {
   }
 });
 
-Board.belongsTo(User, { foreignKey: 'owner_id' });
+Board.belongsTo(TempUser, { foreignKey: 'owner_id', onDelete: 'CASCADE' });
 
 module.exports = Board;

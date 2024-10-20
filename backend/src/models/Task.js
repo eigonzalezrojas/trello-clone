@@ -8,7 +8,8 @@ const Task = sequelize.define('Task', {
     allowNull: false
   },
   description: {
-    type: DataTypes.TEXT
+    type: DataTypes.TEXT,
+    allowNull: true
   },
   status: {
     type: DataTypes.STRING,
@@ -16,7 +17,6 @@ const Task = sequelize.define('Task', {
   }
 });
 
-// Relacionar las tareas con los tableros
-Task.belongsTo(Board, { foreignKey: 'board_id' });
+Task.belongsTo(Board, { foreignKey: 'board_id', onDelete: 'CASCADE' });
 
 module.exports = Task;
