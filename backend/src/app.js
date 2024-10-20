@@ -5,11 +5,11 @@ const pgSession = require('connect-pg-simple')(session);
 const app = express();
 const sequelize = require('./sequelize');
 const tempUserSession = require('./middleware/tempUserSession');
+const createDefaultBoards = require('./middleware/defaultBoards');
 const boardRoutes = require('./routes/boardRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 
 app.use(express.json());
-
 
 app.use(session({
   store: new pgSession({
@@ -24,12 +24,14 @@ app.use(session({
 // Middleware de usuario temporal
 app.use(tempUserSession);
 
+// Middleware para crear los tableros predeterminados
+app.use(createDefaultBoards); 
+
 // Rutas de tableros
 app.use('/api', boardRoutes);
 
 // Rutas de tareas
 app.use('/api', taskRoutes);
-
 
 // Sincronizar modelos con la base de datos y luego iniciar el servidor
 sequelize.sync({ alter: true })
