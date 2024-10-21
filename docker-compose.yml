@@ -5,15 +5,17 @@ services:
     ports:
       - "5002:5000"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: trello_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     depends_on:
       - db
     volumes:
       - ./backend:/app
     networks:
       - trello-network
+    env_file: 
+      - .env
 
   frontend:
     build: ./frontend
@@ -29,14 +31,16 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: trello_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - trello-network
+    env_file: 
+      - .env
 
 volumes:
   postgres_data:

@@ -1,4 +1,4 @@
--- Usuarios
+-- Usuarios temporales
 CREATE TABLE IF NOT EXISTS temp_users (
     id SERIAL PRIMARY KEY,
     session_id VARCHAR(255) UNIQUE NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS temp_users (
 CREATE TABLE IF NOT EXISTS boards (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    owner_id INTEGER REFERENCES temp_users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
