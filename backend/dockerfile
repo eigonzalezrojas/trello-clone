@@ -1,5 +1,5 @@
 # Imagen oficial de Node.js
-FROM node:14
+FROM node:16
 
 # Directorio de trabajo
 WORKDIR /app

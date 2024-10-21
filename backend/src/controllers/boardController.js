@@ -14,7 +14,14 @@ exports.getAllBoards = async (req, res) => {
 // Crear un nuevo tablero
 exports.createBoard = async (req, res) => {
   try {
-    const { name, owner_id } = req.body;
+    const { name } = req.body;
+    
+    if (!name) {
+      return res.status(400).json({ error: 'El nombre del tablero es obligatorio' });
+    }
+
+    const owner_id = req.tempUser.id;
+
     const board = await Board.create({ name, owner_id });
     res.json(board);
   } catch (err) {

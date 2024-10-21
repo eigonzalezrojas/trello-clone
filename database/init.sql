@@ -22,3 +22,11 @@ CREATE TABLE IF NOT EXISTS tasks (
     status VARCHAR(50) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Tabla de sesiones
+CREATE TABLE IF NOT EXISTS sessions (
+    sid VARCHAR NOT NULL COLLATE "default",
+    sess JSON NOT NULL,
+    expire TIMESTAMP(6) NOT NULL,
+    CONSTRAINT "session_pkey" PRIMARY KEY (sid)
+) WITH (OIDS=FALSE);

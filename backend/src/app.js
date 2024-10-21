@@ -2,18 +2,30 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
-const app = express();
+const { Pool } = require('pg');
 const sequelize = require('./sequelize');
 const tempUserSession = require('./middleware/tempUserSession');
-const createDefaultBoards = require('./middleware/defaultBoards');
 const boardRoutes = require('./routes/boardRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 
+const app = express();
+
 app.use(express.json());
 
+// Pool de conexiones 'pg' en lugar de Sequelize
+const pgPool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
+// Configuración de express-session con connect-pg-simple
 app.use(session({
   store: new pgSession({
-    pool: sequelize.connectionManager.pool,
+    pool: pgPool,
+    tableName: 'sessions'
   }),
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -23,9 +35,6 @@ app.use(session({
 
 // Middleware de usuario temporal
 app.use(tempUserSession);
-
-// Middleware para crear los tableros predeterminados
-app.use(createDefaultBoards); 
 
 // Rutas de tableros
 app.use('/api', boardRoutes);
