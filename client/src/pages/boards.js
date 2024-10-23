@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import BoardItem from '../components/BoardItem';
+import { Link } from 'react-router-dom';
 
 function Boards() {
   const [boards, setBoards] = useState([]);
@@ -12,13 +12,17 @@ function Boards() {
   }, []);
 
   return (
-    <div>
-      <h1>Boards</h1>
-      <div>
+    <div className="boards-container">
+      <h1>Your Boards</h1>
+      <div className="boards-list">
         {boards.length > 0 ? (
-          boards.map((board) => <BoardItem key={board.id} board={board} />)
+          boards.map((board) => (
+            <Link key={board.id} to={`/boards/${board.id}/tasks`} className="board-card">
+              <h2>{board.name}</h2>
+            </Link>
+          ))
         ) : (
-          <p>No boards available.</p>
+          <p>No boards available. Create one!</p>
         )}
       </div>
     </div>

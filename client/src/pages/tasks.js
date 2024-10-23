@@ -14,13 +14,13 @@ function Tasks() {
   }, [boardId]);
 
   return (
-    <div>
+    <div className="tasks-container">
       <h1>Tasks for Board {boardId}</h1>
-      <div>
+      <div className="tasks-list">
         {tasks.length > 0 ? (
           tasks.map((task) => <TaskItem key={task.id} task={task} />)
         ) : (
-          <p>No tasks available.</p>
+          <p>No tasks available. Add some tasks!</p>
         )}
       </div>
     </div>
