@@ -36,15 +36,12 @@ const Home = () => {
           },
           body: JSON.stringify({ name: boardName }),
         });
-        const textResponse = await response.text();  // Obtén la respuesta como texto
-        console.log('Raw response:', textResponse);   // Imprime la respuesta cruda
-        
-        const data = JSON.parse(textResponse);        // Intenta convertirlo en JSON
+        const data = await response.json();
         
         if (response.ok) {
           console.log('Board created:', data);
           setBoardName('');  // Limpiar campo de entrada
-          navigate('/boards');  // Redirigir usando useNavigate
+          setBoards([...boards, data]);  // Actualizar la lista de tableros sin recargar
         } else {
           console.error('Error creating board:', data);
         }
