@@ -8,6 +8,9 @@ router.get('/boards', boardController.getAllBoards);
 // Crear un nuevo tablero
 router.post('/boards', boardController.createBoard);
 
+// Editar un tablero
+router.put('/boards/:id', boardController.updateBoard);
+
 // Eliminar un tablero
 router.delete('/boards/:id', boardController.deleteBoard);
 

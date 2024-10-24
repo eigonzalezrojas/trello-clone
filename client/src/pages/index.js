@@ -39,6 +39,7 @@ function Home() {
     e.preventDefault();
     if (boardName.trim()) {
       try {
+        console.log('Enviando solicitud para crear el tablero...');
         const response = await fetch('/api/boards', {
           method: 'POST',
           headers: {
@@ -50,10 +51,12 @@ function Home() {
           const newBoard = await response.json();
           setBoards([...boards, newBoard]);
           setBoardName('');
+          console.log('Tablero creado:', newBoard);
         } else {
           throw new Error('Error creating board');
         }
       } catch (error) {
+        console.error('Error al crear el tablero:', error);
         setError('Error al crear el tablero.');
       }
     }
@@ -66,7 +69,7 @@ function Home() {
         await fetch(`/api/boards/${boardId}`, {
           method: 'DELETE',
         });
-        setBoards(boards.filter(board => board.id !== boardId)); // Remover del estado
+        setBoards(boards.filter(board => board.id !== boardId));
       } catch (error) {
         console.error('Error deleting board:', error);
       }
