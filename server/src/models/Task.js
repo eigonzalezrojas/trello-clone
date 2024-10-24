@@ -5,16 +5,23 @@ const Board = require('./Board');
 const Task = sequelize.define('Task', {
   title: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: 'pending'
+    defaultValue: 'pending',
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   }
+}, {
+  tableName: 'tasks',
+  timestamps: false,
 });
 
 Task.belongsTo(Board, { foreignKey: 'board_id', onDelete: 'CASCADE' });

@@ -7,7 +7,7 @@ function Tasks() {
   const { boardId } = useParams();
 
   useEffect(() => {
-    fetch(`/api/boards/${boardId}/tasks`)
+    fetch(`http://localhost:5002/api/boards/${boardId}/tasks`)
       .then((response) => response.json())
       .then((data) => setTasks(data))
       .catch((error) => console.error('Error fetching tasks:', error));

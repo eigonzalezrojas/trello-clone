@@ -1,9 +1,9 @@
+const TempUser = require('./TempUser');
 const Board = require('./Board');
 const Task = require('./Task');
-const TempUser = require('./TempUser');
 
 module.exports = {
+  TempUser,
   Board,
   Task,
-  TempUser,
 };

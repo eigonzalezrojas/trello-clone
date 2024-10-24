@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5000
 
 # Start the Express server
-CMD ["npm", "start"]
+CMD ["node", "src/app.js"]

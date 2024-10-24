@@ -11,7 +11,7 @@ const Home = () => {
 
   // Obtener tableros existentes cuando se carga el componente
   useEffect(() => {
-    fetch('/api/boards')
+    fetch('http://localhost:5002/api/boards')
       .then((response) => response.json())
       .then((data) => {
         setBoards(data);
@@ -29,7 +29,7 @@ const Home = () => {
     e.preventDefault();
     if (boardName.trim()) {
       try {
-        const response = await fetch('/api/boards', {
+        const response = await fetch('http://localhost:5002/api/boards', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

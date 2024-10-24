@@ -1,15 +1,26 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../sequelize');
+const { TempUser } = require('../models');
 
-const TempUser = sequelize.define('TempUser', {
-  session_id: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+const tempUserSession = async (req, res, next) => {
+  try {
+    if (!req.session.tempUserId) {
+      const tempUser = await TempUser.create({ session_id: req.sessionID });
+      req.session.tempUserId = tempUser.id;
+      req.tempUser = tempUser;
+    } else {
+      const tempUser = await TempUser.findByPk(req.session.tempUserId);
+      if (tempUser) {
+        req.tempUser = tempUser;
+      } else {
+        const newTempUser = await TempUser.create({ session_id: req.sessionID });
+        req.session.tempUserId = newTempUser.id;
+        req.tempUser = newTempUser;
+      }
+    }
+    next();
+  } catch (error) {
+    console.error('Error in tempUserSession middleware:', error);
+    res.status(500).json({ error: 'Error en la creación de usuario temporal' });
   }
-}, {
-  tableName: 'temp_users',
-  timestamps: false,
-});
+};
 
-module.exports = TempUser;
+module.exports = tempUserSession;
