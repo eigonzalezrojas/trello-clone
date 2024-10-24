@@ -1,81 +1,140 @@
+/* Estilos para el contenedor principal */
 .home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   text-align: center;
-  margin-top: 50px;
+  font-family: Arial, sans-serif;
 }
 
-.board-creation {
+/* Encabezado */
+.home-container h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
   margin-bottom: 20px;
+  color: #333;
 }
 
-.board-input {
+/* Sección de creación de tableros */
+.board-creation-section {
+  margin-bottom: 30px;
+}
+
+.board-creation-section input {
   padding: 10px;
+  width: 300px;
   font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 5px;
   margin-right: 10px;
 }
 
-.create-board-button, .view-boards-button {
+.board-creation-section button {
   padding: 10px 20px;
   font-size: 1rem;
-  cursor: pointer;
-  background-color: #4CAF50;
+  background-color: #0079bf;
   color: white;
   border: none;
-  border-radius: 4px;
-}
-
-.view-boards-button {
-  background-color: #2196F3;
-}
-
-.board-list {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-}
-
-.board-list .board {
-  background-color: #f4f4f4;
-  padding: 20px;
-  border-radius: 6px;
-  margin: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.board-list .board:hover {
-  background-color: #e1e1e1;
+.board-creation-section button:hover {
+  background-color: #005a8c;
 }
 
-.boards-container {
-  text-align: center;
-  margin-top: 50px;
-}
-
+/* Estilos para la lista de tableros */
 .boards-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .board-card {
-  background-color: #f1f1f1;
+  background-color: #f4f5f7;
   padding: 20px;
   margin: 10px;
   width: 250px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  text-decoration: none;
-  color: #333;
-  transition: background-color 0.3s;
-}
-
-.board-card:hover {
-  background-color: #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .board-card h2 {
-  margin: 0;
   font-size: 1.5rem;
+  color: #333;
 }
+
+.board-card:hover {
+  background-color: #e2e4e6;
+}
+
+/* Botones para editar y eliminar tableros */
+.board-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.board-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 5px;
+}
+
+.board-actions button:hover {
+  color: #0079bf;
+}
+
+/* Estilos para los mensajes de carga y error */
+p {
+  font-size: 1.1rem;
+  color: #ff0000;
+}
+
+
+.board-item {
+  background-color: #f4f4f4;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  width: 250px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.board-options {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.board-menu {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+
+.board-menu button {
+  display: block;
+  width: 100%;
+  padding: 5px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.board-menu button:hover {
+  background-color: #f0f0f0;
+}
+

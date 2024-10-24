@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import BoardItem from '../components/BoardItem';
+import '../index.css';
 
 function Home() {
   const [boards, setBoards] = useState([]);
@@ -9,7 +10,7 @@ function Home() {
 
   // Cargar los tableros existentes
   useEffect(() => {
-    fetch('http://localhost:5002/api/boards', {
+    fetch('/api/boards', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -38,7 +39,7 @@ function Home() {
     e.preventDefault();
     if (boardName.trim()) {
       try {
-        const response = await fetch('http://localhost:5002/api/boards', {
+        const response = await fetch('/api/boards', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -47,13 +48,46 @@ function Home() {
         });
         if (response.ok) {
           const newBoard = await response.json();
-          setBoards([...boards, newBoard]); // Añadir el nuevo tablero a la lista
+          setBoards([...boards, newBoard]);
           setBoardName('');
         } else {
           throw new Error('Error creating board');
         }
       } catch (error) {
         setError('Error al crear el tablero.');
+      }
+    }
+  };
+
+  // Función para eliminar un tablero
+  const handleDeleteBoard = async (boardId) => {
+    if (window.confirm('¿Seguro que deseas eliminar este tablero?')) {
+      try {
+        await fetch(`/api/boards/${boardId}`, {
+          method: 'DELETE',
+        });
+        setBoards(boards.filter(board => board.id !== boardId)); // Remover del estado
+      } catch (error) {
+        console.error('Error deleting board:', error);
+      }
+    }
+  };
+
+  // Función para editar el nombre de un tablero
+  const handleEditBoard = async (boardId) => {
+    const newName = prompt('Ingresa el nuevo nombre del tablero:');
+    if (newName) {
+      try {
+        await fetch(`/api/boards/${boardId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: newName }),
+        });
+        setBoards(boards.map(board => board.id === boardId ? { ...board, name: newName } : board));
+      } catch (error) {
+        console.error('Error editing board:', error);
       }
     }
   };
@@ -72,9 +106,7 @@ function Home() {
           />
           <button type="submit">Crear Tablero</button>
         </form>
-      </div>
-
-      <h2>Tableros existentes</h2>
+      </div>      
       {loading ? (
         <p>Cargando tableros...</p>
       ) : error ? (
@@ -83,12 +115,15 @@ function Home() {
         <div className="boards-list">
           {boards.length > 0 ? (
             boards.map((board) => (
-              <Link key={board.id} to={`/boards/${board.id}/tasks`} className="board-card">
-                <h2>{board.name}</h2>
-              </Link>
+              <BoardItem
+                key={board.id}
+                board={board}
+                onDelete={handleDeleteBoard}
+                onEdit={handleEditBoard}
+              />
             ))
           ) : (
-            <p>No hay tableros disponibles. Crea uno!</p>
+            <p>No hay tableros disponibles. ¡Crea uno!</p>
           )}
         </div>
       )}

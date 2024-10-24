@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import BoardItem from '../components/BoardItem';
 
 const Home = () => {
   const [boardName, setBoardName] = useState('');
-  const [boards, setBoards] = useState([]);  // Estado para almacenar los tableros existentes
+  const [boards, setBoards] = useState([]); 
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);  // Estado de carga
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  // Obtener tableros existentes cuando se carga el componente
+
+  // Obtener tableros existentes
   useEffect(() => {
-    fetch('http://localhost:5002/api/boards')
+    fetch('/api/boards')
       .then((response) => response.json())
       .then((data) => {
         setBoards(data);
@@ -29,7 +28,7 @@ const Home = () => {
     e.preventDefault();
     if (boardName.trim()) {
       try {
-        const response = await fetch('http://localhost:5002/api/boards', {
+        const response = await fetch('/api/boards', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -40,8 +39,8 @@ const Home = () => {
         
         if (response.ok) {
           console.log('Board created:', data);
-          setBoardName('');  // Limpiar campo de entrada
-          setBoards([...boards, data]);  // Actualizar la lista de tableros sin recargar
+          setBoardName('');
+          setBoards([...boards, data]);
         } else {
           console.error('Error creating board:', data);
         }
@@ -51,7 +50,7 @@ const Home = () => {
     }
   };
 
-  // Mostrar los tableros o un mensaje de carga/error
+  // Mostrar los tableros
   const renderBoards = () => {
     if (loading) {
       return <p>Cargando tableros...</p>;
@@ -82,15 +81,9 @@ const Home = () => {
             onChange={(e) => setBoardName(e.target.value)}
             placeholder="Ingrese el nombre del tablero"
           />
-          <button type="submit">Crear Tablero</button>
+          <button type="submit">Crear</button>
         </form>
-      </div>
-
-      <div className="action-buttons">
-        <button onClick={() => navigate('/boards')}>Ver todos los tableros</button>
-      </div>
-
-      <h2>Tableros existentes</h2>
+      </div>     
       {renderBoards()}
     </div>
   );
