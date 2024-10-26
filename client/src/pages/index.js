@@ -10,7 +10,7 @@ function Home() {
 
   // Cargar los tableros existentes
   useEffect(() => {
-    fetch('/api/boards', {
+    fetch('http://localhost:5002/api/boards', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -40,8 +40,9 @@ function Home() {
     if (boardName.trim()) {
       try {
         console.log('Enviando solicitud para crear el tablero...');
-        const response = await fetch('/api/boards', {
+        const response = await fetch('http://localhost:5002/api/boards', {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -66,7 +67,7 @@ function Home() {
   const handleDeleteBoard = async (boardId) => {
     if (window.confirm('¿Seguro que deseas eliminar este tablero?')) {
       try {
-        await fetch(`/api/boards/${boardId}`, {
+        await fetch(`http://localhost:5002/api/boards/${boardId}`, {
           method: 'DELETE',
         });
         setBoards(boards.filter(board => board.id !== boardId));
@@ -81,7 +82,7 @@ function Home() {
     const newName = prompt('Ingresa el nuevo nombre del tablero:');
     if (newName) {
       try {
-        await fetch(`/api/boards/${boardId}`, {
+        await fetch(`http://localhost:5002/api/boards/${boardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

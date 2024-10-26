@@ -31,7 +31,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 },
+  cookie: { maxAge: 60 * 60 * 1000, sameSite: 'lax'},
 }));
 
 app.use(express.json());
@@ -43,10 +43,8 @@ app.use('/api', boardRoutes);
 // Sincronización de la base de datos y servidor
 sequelize.sync({ alter: true })
   .then(() => {
-    console.log('Base de datos sincronizada');
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
   })
   .catch(err => {

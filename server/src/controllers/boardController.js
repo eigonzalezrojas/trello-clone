@@ -6,7 +6,6 @@ exports.getAllBoards = async (req, res) => {
     const boards = await Board.findAll();
     res.json(boards);
   } catch (err) {
-    console.error(err.message);
     res.status(500).json({ error: 'Error al obtener los tableros' });
   }
 };
@@ -38,9 +37,6 @@ exports.createBoard = async (req, res) => {
     const { name } = req.body;
     const owner_id = req.session.tempUserId;
 
-    console.log('Nombre del tablero:', name);
-    console.log('ID del usuario temporal (owner_id):', owner_id);
-
     if (!name) {
       return res.status(400).json({ error: 'El nombre del tablero es obligatorio' });
     }
@@ -52,7 +48,6 @@ exports.createBoard = async (req, res) => {
     const board = await Board.create({ name, owner_id });
     res.json(board);
   } catch (err) {
-    console.error('Error al crear el tablero:', err.message);
     res.status(500).json({ error: 'Error al crear el tablero' });
   }
 };

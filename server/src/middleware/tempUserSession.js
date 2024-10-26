@@ -18,7 +18,6 @@ const tempUserSession = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.error('Error in tempUserSession middleware:', error);
     res.status(500).json({ error: 'Error en la creación de usuario temporal' });
   }
 };
