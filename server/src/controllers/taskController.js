@@ -1,4 +1,5 @@
 const Task = require('../models/Task');
+const { zonedTimeToUtc } = require('date-fns-tz');
 
 // Obtener todas las tareas de un tablero
 exports.getTasksByBoard = async (req, res) => {
@@ -17,11 +18,17 @@ exports.createTask = async (req, res) => {
   try {
     const { board_id } = req.params;
     const { title, description, status } = req.body;
+
+    // Convertir la fecha actual a UTC en la zona horaria de Santiago de Chile
+    const timezone = 'America/Santiago';
+    const createdAt = zonedTimeToUtc(new Date(), timezone);
+
     const task = await Task.create({
       title,
       description,
       status: status || 'pending',
-      board_id
+      board_id,
+      created_at: createdAt
     });
     res.json(task);
   } catch (err) {

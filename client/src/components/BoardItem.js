@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     CardHeader,
     CardContent,
     CardActions,
-    Typography,
     Button,
     IconButton,
     Menu,
@@ -14,29 +13,54 @@ import {
     DialogContent,
     DialogActions,
     TextField,
+    Typography,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import TaskItem from './TaskItem';
 
-function BoardItem({ board, onEdit, onDelete, onCreateTask }) {
+function BoardItem({ board, onEdit, onDelete }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
+    const [tasks, setTasks] = useState([]);
 
-    const toggleTaskModal = () => setShowTaskModal(!showTaskModal);
+    useEffect(() => {
+        // Cargar tareas del tablero al cargar el componente
+        fetch(`http://localhost:5002/api/boards/${board.id}/tasks`)
+            .then(response => response.json())
+            .then(data => setTasks(data))
+            .catch(error => console.error("Error al cargar tareas:", error));
+    }, [board.id]);
 
-    const handleCreateTask = () => {
-        onCreateTask(board.id, { title: taskTitle, description: taskDescription });
-        setTaskTitle('');
-        setTaskDescription('');
-        toggleTaskModal();
-    };
-
+    // Funciones para el manejo del menú
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
 
+    // Función para alternar el modal de creación de tareas
+    const toggleTaskModal = () => setShowTaskModal(!showTaskModal);
+
+    // Función para crear una nueva tarea
+    const handleCreateTask = () => {
+        fetch(`http://localhost:5002/api/boards/${board.id}/tasks`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ title: taskTitle, description: taskDescription }),
+        })
+            .then(response => response.json())
+            .then(newTask => {
+                setTasks([...tasks, newTask]);
+                setTaskTitle('');
+                setTaskDescription('');
+                toggleTaskModal();
+            })
+            .catch(error => console.error("Error al crear la tarea:", error));
+    };
+
     return (
-        <Card sx={{ maxWidth: 300, minWidth: 250, marginBottom: 2 }}>
+        <Card sx={{ maxWidth: 300, minWidth: 250, margin: 2 }}>
             <CardHeader
                 title={board.name}
                 sx={{ backgroundColor: '#1976d2', color: '#fff' }}
@@ -54,7 +78,14 @@ function BoardItem({ board, onEdit, onDelete, onCreateTask }) {
                 <MenuItem onClick={() => { handleMenuClose(); onEdit(board.id); }}>Editar</MenuItem>
                 <MenuItem onClick={() => { handleMenuClose(); onDelete(board.id); }}>Eliminar</MenuItem>
             </Menu>
+
             <CardContent>
+                {tasks.map(task => (
+                    <TaskItem key={task.id} task={task} />
+                ))}
+            </CardContent>
+
+            <CardActions>
                 <Button
                     fullWidth
                     variant="contained"
@@ -64,7 +95,7 @@ function BoardItem({ board, onEdit, onDelete, onCreateTask }) {
                 >
                     Add Task
                 </Button>
-            </CardContent>
+            </CardActions>
 
             {/* Modal para crear tarea */}
             <Dialog open={showTaskModal} onClose={toggleTaskModal}>

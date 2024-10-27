@@ -1,4 +1,3 @@
-// pages/index.js
 import React, { useState, useEffect } from 'react';
 import BoardList from '../components/BoardListItem';
 import '../index.css';
