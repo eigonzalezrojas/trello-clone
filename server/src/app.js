@@ -4,6 +4,7 @@ const pgSession = require('connect-pg-simple')(session);
 const { Pool } = require('pg');
 const sequelize = require('./sequelize');
 const boardRoutes = require('./routes/boardRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 const tempUserSession = require('./middleware/tempUserSession');
 
 const app = express();
@@ -37,8 +38,11 @@ app.use(session({
 app.use(express.json());
 app.use(tempUserSession);
 
-// Rutas de los tableros
+// Routes of the boards
 app.use('/api', boardRoutes);
+
+// Routes of the tasks
+app.use('/api', taskRoutes);
 
 // Sincronización de la base de datos y servidor
 sequelize.sync({ alter: true })
