@@ -12,13 +12,13 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    TextField,
-    Typography,
+    TextField
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TaskItem from './TaskItem';
+import { Droppable } from '@hello-pangea/dnd';
 
-function BoardItem({ board, onEdit, onDelete }) {
+function BoardItem({ board, onEdit, onDelete, onAddTask }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [taskTitle, setTaskTitle] = useState('');
@@ -60,71 +60,80 @@ function BoardItem({ board, onEdit, onDelete }) {
     };
 
     return (
-        <Card sx={{ maxWidth: 300, minWidth: 250, margin: 2 }}>
-            <CardHeader
-                title={board.name}
-                sx={{ backgroundColor: '#1976d2', color: '#fff' }}
-                action={
-                    <IconButton onClick={handleMenuOpen} color="inherit">
-                        <MoreVertIcon />
-                    </IconButton>
-                }
-            />
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-            >
-                <MenuItem onClick={() => { handleMenuClose(); onEdit(board.id); }}>Editar</MenuItem>
-                <MenuItem onClick={() => { handleMenuClose(); onDelete(board.id); }}>Eliminar</MenuItem>
-            </Menu>
-
-            <CardContent>
-                {tasks.map(task => (
-                    <TaskItem key={task.id} task={task} />
-                ))}
-            </CardContent>
-
-            <CardActions>
-                <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={toggleTaskModal}
-                    sx={{ marginTop: 1 }}
+        <Droppable droppableId={board.id.toString()}>
+            {(provided) => (
+                <Card
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    sx={{ maxWidth: 300, minWidth: 250, margin: 2 }}
                 >
-                    Add Task
-                </Button>
-            </CardActions>
+                    <CardHeader
+                        title={board.name}
+                        sx={{ backgroundColor: '#1976d2', color: '#fff' }}
+                        action={
+                            <IconButton onClick={handleMenuOpen} color="inherit">
+                                <MoreVertIcon />
+                            </IconButton>
+                        }
+                    />
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                    >
+                        <MenuItem onClick={() => { handleMenuClose(); onEdit(board.id); }}>Editar</MenuItem>
+                        <MenuItem onClick={() => { handleMenuClose(); onDelete(board.id); }}>Eliminar</MenuItem>
+                    </Menu>
 
-            {/* Modal para crear tarea */}
-            <Dialog open={showTaskModal} onClose={toggleTaskModal}>
-                <DialogTitle>Crear Nueva Tarea</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Título"
-                        fullWidth
-                        value={taskTitle}
-                        onChange={(e) => setTaskTitle(e.target.value)}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Descripción"
-                        fullWidth
-                        value={taskDescription}
-                        onChange={(e) => setTaskDescription(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={toggleTaskModal}>Cancelar</Button>
-                    <Button onClick={handleCreateTask} variant="contained">
-                        Crear Tarea
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Card>
+                    <CardContent>
+                        {tasks.map((task, index) => (
+                            <TaskItem key={task.id} task={task} index={index} />
+                        ))}
+                        {provided.placeholder}
+                    </CardContent>
+
+                    <CardActions>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            onClick={toggleTaskModal}
+                            sx={{ marginTop: 1 }}
+                        >
+                            Add Task
+                        </Button>
+                    </CardActions>
+
+                    {/* Modal para crear tarea */}
+                    <Dialog open={showTaskModal} onClose={toggleTaskModal}>
+                        <DialogTitle>Crear Nueva Tarea</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label="Título"
+                                fullWidth
+                                value={taskTitle}
+                                onChange={(e) => setTaskTitle(e.target.value)}
+                            />
+                            <TextField
+                                margin="dense"
+                                label="Descripción"
+                                fullWidth
+                                value={taskDescription}
+                                onChange={(e) => setTaskDescription(e.target.value)}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={toggleTaskModal}>Cancelar</Button>
+                            <Button onClick={handleCreateTask} variant="contained">
+                                Crear Tarea
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </Card>
+            )}
+        </Droppable>
     );
 }
 

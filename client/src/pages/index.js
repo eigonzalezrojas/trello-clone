@@ -24,7 +24,11 @@ function Home() {
           return response.json();
         })
         .then((data) => {
-          setBoards(data);
+          const boardsWithTasks = data.map(board => ({
+            ...board,
+            tasks: board.tasks || [],
+          }));
+          setBoards(boardsWithTasks);
           setLoading(false);
         })
         .catch((error) => {
@@ -47,7 +51,7 @@ function Home() {
         });
         if (response.ok) {
           const newBoard = await response.json();
-          setBoards([...boards, newBoard]);
+          setBoards([...boards, { ...newBoard, tasks: [] }]); // Asegura que el nuevo tablero tenga 'tasks' vacío
           setBoardName('');
         } else {
           throw new Error('Error creating board');
@@ -93,8 +97,40 @@ function Home() {
     }
   };
 
-  const handleCreateTask = (boardId, taskData) => {
-    // Lógica para agregar una tarea
+  const onMoveTask = async (taskId, destinationBoardId) => {
+    try {
+      const response = await fetch(`http://localhost:5002/api/tasks/${taskId}/move`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetBoardId: destinationBoardId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al mover la tarea');
+      }
+
+      const updatedTask = await response.json();
+
+      // Actualizar el estado de los tableros en tiempo real
+      setBoards(prevBoards =>
+          prevBoards.map(board => {
+            if (board.id === destinationBoardId) {
+              // Agregar tarea al tablero de destino
+              return { ...board, tasks: [...(board.tasks || []), updatedTask] };
+            }
+            if (board.tasks?.some(task => task.id === taskId)) {
+              // Eliminar tarea del tablero de origen
+              return {
+                ...board,
+                tasks: board.tasks.filter(task => task.id !== taskId),
+              };
+            }
+            return board;
+          })
+      );
+    } catch (error) {
+      console.error('Error en onMoveTask:', error);
+    }
   };
 
   return (
@@ -120,7 +156,7 @@ function Home() {
                 boards={boards}
                 onEdit={handleEditBoard}
                 onDelete={handleDeleteBoard}
-                onCreateTask={handleCreateTask}
+                onMoveTask={onMoveTask}
             />
         )}
       </div>
