@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     CardHeader,
@@ -17,12 +17,17 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TaskItem from './TaskItem';
 
-function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted }) {
+function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTask }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [tasks, setTasks] = useState(board.tasks || []);
+
+    // Actualizar las tareas cuando cambian en el board
+    useEffect(() => {
+        setTasks(board.tasks || []);
+    }, [board.tasks]);
 
     // Funciones para el manejo del menú
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
@@ -46,13 +51,15 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({ title: taskTitle, description: taskDescription }),
             });
 
             if (response.ok) {
                 const newTask = await response.json();
-                setTasks([...tasks, newTask]);
+                setTasks(prevTasks => [...prevTasks, newTask]);
                 onAddTask(board.id, newTask);
                 toggleTaskModal();
             } else {
@@ -70,7 +77,9 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted }) {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(updatedTask),
             });
 
@@ -96,6 +105,20 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted }) {
             setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
         } catch (error) {
             console.error("Error al eliminar la tarea:", error);
+        }
+    };
+
+    // Función para manejar el movimiento de tareas
+    const handleTaskMoved = (taskId, sourceBoardId, targetBoardId) => {
+        if (sourceBoardId === board.id) {
+            // Remover la tarea del tablero de origen
+            setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+        } else if (targetBoardId === board.id) {
+            // Añadir la tarea al tablero de destino
+            const movedTask = tasks.find(task => task.id === taskId);
+            if (movedTask) {
+                setTasks(prevTasks => [...prevTasks, { ...movedTask, board_id: targetBoardId }]);
+            }
         }
     };
 
@@ -127,6 +150,7 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted }) {
                         index={index}
                         onTaskUpdated={handleTaskUpdated}
                         onTaskDeleted={handleTaskDeleted}
+                        onTaskMoved={handleTaskMoved}
                         boardId={board.id}
                     />
                 ))}

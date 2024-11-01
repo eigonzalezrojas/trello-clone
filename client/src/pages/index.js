@@ -145,7 +145,11 @@ function Home() {
     try {
       const response = await fetch(`/api/tasks/${taskId}/move`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
         body: JSON.stringify({ targetBoardId: destinationBoardId }),
       });
 
@@ -156,16 +160,28 @@ function Home() {
       const updatedTask = await response.json();
 
       // Actualizar el estado de los tableros
-      setBoards((prevBoards) => {
-        return prevBoards.map((board) => {
-          // Si es el tablero de destino, agregar la tarea
+      setBoards(prevBoards => {
+        // Encontrar el tablero de origen
+        const sourceBoard = prevBoards.find(board =>
+            board.tasks.some(task => task.id === taskId)
+        );
+
+        return prevBoards.map(board => {
+          // Si es el tablero de origen, removemos la tarea
+          if (board.id === sourceBoard.id) {
+            return {
+              ...board,
+              tasks: board.tasks.filter(task => task.id !== taskId)
+            };
+          }
+          // Si es el tablero de destino, añadimos la tarea actualizada
           if (board.id === destinationBoardId) {
-            return { ...board, tasks: [...board.tasks, updatedTask] };
+            return {
+              ...board,
+              tasks: [...board.tasks, updatedTask]
+            };
           }
-          // Si es el tablero de origen, eliminar la tarea
-          if (board.tasks.some((task) => task.id === taskId)) {
-            return { ...board, tasks: board.tasks.filter((task) => task.id !== taskId) };
-          }
+          // Para otros tableros, no hacemos cambios
           return board;
         });
       });
