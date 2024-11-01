@@ -8,33 +8,67 @@ function Home() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const loadTasksForBoard = async (boardId) => {
+    try {
+      const response = await fetch(`/api/boards/${boardId}/tasks`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error fetching tasks');
+      }
+
+      const tasks = await response.json();
+      return tasks;
+    } catch (error) {
+      console.error(`Error loading tasks for board ${boardId}:`, error);
+      return [];
+    }
+  };
+
   useEffect(() => {
-    fetch('/api/boards', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Error fetching boards');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          const boardsWithTasks = data.map(board => ({
-            ...board,
-            tasks: board.tasks || [],
-          }));
-          setBoards(boardsWithTasks);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError('Error al cargar los tableros.');
-          setLoading(false);
+    const loadBoardsAndTasks = async () => {
+      try {
+        const boardsResponse = await fetch('/api/boards', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
         });
+
+        if (!boardsResponse.ok) {
+          throw new Error('Error fetching boards');
+        }
+
+        const boardsData = await boardsResponse.json();
+
+        // Cargar las tareas para cada tablero
+        const boardsWithTasks = await Promise.all(
+            boardsData.map(async (board) => {
+              const tasks = await loadTasksForBoard(board.id);
+              return {
+                ...board,
+                tasks: tasks,
+              };
+            })
+        );
+
+        setBoards(boardsWithTasks);
+        setLoading(false);
+      } catch (error) {
+        setError('Error al cargar los tableros.');
+        setLoading(false);
+      }
+    };
+
+    loadBoardsAndTasks();
   }, []);
 
   const handleCreateBoard = async (e) =>  {
@@ -97,6 +131,16 @@ function Home() {
     }
   };
 
+  const onAddTask = (boardId, newTask) => {
+    setBoards(prevBoards =>
+        prevBoards.map(board =>
+            board.id === boardId
+                ? { ...board, tasks: [...board.tasks, newTask] }
+                : board
+        )
+    );
+  };
+
   const onMoveTask = async (taskId, destinationBoardId) => {
     try {
       const response = await fetch(`/api/tasks/${taskId}/move`, {
@@ -111,23 +155,20 @@ function Home() {
 
       const updatedTask = await response.json();
 
-      // Actualizar el estado de los tableros en tiempo real
-      setBoards(prevBoards =>
-          prevBoards.map(board => {
-            if (board.id === destinationBoardId) {
-              // Agregar tarea al tablero de destino
-              return { ...board, tasks: [...(board.tasks || []), updatedTask] };
-            }
-            if (board.tasks?.some(task => task.id === taskId)) {
-              // Eliminar tarea del tablero de origen
-              return {
-                ...board,
-                tasks: board.tasks.filter(task => task.id !== taskId),
-              };
-            }
-            return board;
-          })
-      );
+      // Actualizar el estado de los tableros
+      setBoards((prevBoards) => {
+        return prevBoards.map((board) => {
+          // Si es el tablero de destino, agregar la tarea
+          if (board.id === destinationBoardId) {
+            return { ...board, tasks: [...board.tasks, updatedTask] };
+          }
+          // Si es el tablero de origen, eliminar la tarea
+          if (board.tasks.some((task) => task.id === taskId)) {
+            return { ...board, tasks: board.tasks.filter((task) => task.id !== taskId) };
+          }
+          return board;
+        });
+      });
     } catch (error) {
       console.error('Error en onMoveTask:', error);
     }
@@ -157,6 +198,7 @@ function Home() {
                 onEdit={handleEditBoard}
                 onDelete={handleDeleteBoard}
                 onMoveTask={onMoveTask}
+                onAddTask={onAddTask}
             />
         )}
       </div>
