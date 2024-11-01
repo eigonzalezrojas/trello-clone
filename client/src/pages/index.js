@@ -174,6 +174,39 @@ function Home() {
     }
   };
 
+  const handleTaskDeleted = async (taskId, boardId) => {
+    try {
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar la tarea');
+      }
+
+      setBoards(prevBoards =>
+          prevBoards.map(board => {
+            if (board.id === boardId) {
+              return {
+                ...board,
+                tasks: board.tasks.filter(task => task.id !== taskId)
+              };
+            }
+            return board;
+          })
+      );
+    } catch (error) {
+      console.error('Error al eliminar la tarea:', error);
+      throw error;
+    }
+  };
+
+
   return (
       <div className="home-container">
         <h1>Bienvenid@ a Trello Clone</h1>
@@ -199,6 +232,7 @@ function Home() {
                 onDelete={handleDeleteBoard}
                 onMoveTask={onMoveTask}
                 onAddTask={onAddTask}
+                onTaskDeleted={handleTaskDeleted}
             />
         )}
       </div>

@@ -2,7 +2,7 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import Grid from "@mui/material/Grid";
 import BoardItem from "./BoardItem";
 
-function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask }) {
+function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTaskDeleted }) {
     const onDragEnd = (result) => {
         const { source, destination, draggableId } = result;
         if (!destination ||
@@ -27,6 +27,7 @@ function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask }) {
                                     onDelete={onDelete}
                                     onAddTask={onAddTask}
                                     onMoveTask={onMoveTask}
+                                    onTaskDeleted={onTaskDeleted}
                                 />
                                 {provided.placeholder}
                             </Grid>
