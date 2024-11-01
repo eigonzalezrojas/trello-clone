@@ -26,8 +26,7 @@ function BoardItem({ board, onEdit, onDelete, onAddTask }) {
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-        // Cargar tareas del tablero al cargar el componente
-        fetch(`http://localhost:5002/api/boards/${board.id}/tasks`)
+        fetch(`/api/boards/${board.id}/tasks`)
             .then(response => response.json())
             .then(data => setTasks(data))
             .catch(error => console.error("Error al cargar tareas:", error));
@@ -42,7 +41,8 @@ function BoardItem({ board, onEdit, onDelete, onAddTask }) {
 
     // Función para crear una nueva tarea
     const handleCreateTask = () => {
-        fetch(`http://localhost:5002/api/boards/${board.id}/tasks`, {
+        console.log("board.id:", board.id);
+        fetch(`/api/boards/${board.id}/tasks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,8 +86,8 @@ function BoardItem({ board, onEdit, onDelete, onAddTask }) {
                     </Menu>
 
                     <CardContent>
-                        {tasks.map((task, index) => (
-                            <TaskItem key={task.id} task={task} index={index} />
+                        {tasks && tasks.length > 0 && tasks.map((task, index) => (
+                            task.id ? <TaskItem key={task.id} task={task} index={index} /> : null
                         ))}
                         {provided.placeholder}
                     </CardContent>

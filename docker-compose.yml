@@ -1,4 +1,3 @@
-version: '3'
 services:
   client:
     build: ./client
@@ -8,7 +7,7 @@ services:
     ports:
       - "3002:3000"
     environment:
-      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_USE POLLING=true
       - REACT_APP_ENV=development
     command: npm start
     depends_on:

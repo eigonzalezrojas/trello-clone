@@ -9,7 +9,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5002/api/boards', {
+    fetch('/api/boards', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -37,11 +37,11 @@ function Home() {
         });
   }, []);
 
-  const handleCreateBoard = async (e) => {
+  const handleCreateBoard = async (e) =>  {
     e.preventDefault();
     if (boardName.trim()) {
       try {
-        const response = await fetch('http://localhost:5002/api/boards', {
+        const response = await fetch('/api/boards', {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -51,7 +51,7 @@ function Home() {
         });
         if (response.ok) {
           const newBoard = await response.json();
-          setBoards([...boards, { ...newBoard, tasks: [] }]); // Asegura que el nuevo tablero tenga 'tasks' vacío
+          setBoards([...boards, { ...newBoard, tasks: [] }]);
           setBoardName('');
         } else {
           throw new Error('Error creating board');
@@ -65,7 +65,7 @@ function Home() {
   const handleDeleteBoard = async (boardId) => {
     if (window.confirm('¿Seguro que deseas eliminar este tablero?')) {
       try {
-        await fetch(`http://localhost:5002/api/boards/${boardId}`, {
+        await fetch(`/api/boards/${boardId}`, {
           method: 'DELETE',
         });
         setBoards(boards.filter((board) => board.id !== boardId));
@@ -79,7 +79,7 @@ function Home() {
     const newName = prompt('Ingresa el nuevo nombre del tablero:');
     if (newName) {
       try {
-        await fetch(`http://localhost:5002/api/boards/${boardId}`, {
+        await fetch(`/api/boards/${boardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ function Home() {
 
   const onMoveTask = async (taskId, destinationBoardId) => {
     try {
-      const response = await fetch(`http://localhost:5002/api/tasks/${taskId}/move`, {
+      const response = await fetch(`/api/tasks/${taskId}/move`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ targetBoardId: destinationBoardId }),

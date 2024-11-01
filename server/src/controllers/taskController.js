@@ -19,7 +19,6 @@ exports.createTask = async (req, res) => {
     const { board_id } = req.params;
     const { title, description, status } = req.body;
 
-    // Convertir la fecha actual a UTC en la zona horaria de Santiago de Chile
     const timezone = 'America/Santiago';
     const createdAt = zonedTimeToUtc(new Date(), timezone);
 
@@ -82,5 +81,24 @@ exports.deleteTask = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Error al eliminar la tarea' });
+  }
+};
+
+// Mover una tarea a otro tablero
+exports.moveTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { targetBoardId } = req.body;
+
+    const task = await Task.findByPk(taskId);
+    if (!task) {
+      return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+
+    await task.update({ board_id: targetBoardId });
+    res.json(task);
+  } catch (err) {
+    console.error('Error al mover la tarea:', err.message);
+    res.status(500).json({ error: 'Error al mover la tarea' });
   }
 };
