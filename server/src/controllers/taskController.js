@@ -17,15 +17,16 @@ exports.getTasksByBoard = async (req, res) => {
 exports.createTask = async (req, res) => {
   try {
     const { board_id } = req.params;
-    const { title, description, status } = req.body;
+    const { title, description} = req.body;
 
-    const timezone = 'America/Santiago';
-    const createdAt = zonedTimeToUtc(new Date(), timezone);
+    const date = new Date();
+    process.env.TZ = 'America/Santiago';
+    const createdAt = date.toString();
 
     const task = await Task.create({
       title,
       description,
-      status: status || 'pending',
+      status: 'pending',
       board_id,
       created_at: createdAt
     });

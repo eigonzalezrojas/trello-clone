@@ -41,7 +41,6 @@ function BoardItem({ board, onEdit, onDelete, onAddTask }) {
 
     // Función para crear una nueva tarea
     const handleCreateTask = () => {
-        console.log("board.id:", board.id);
         fetch(`/api/boards/${board.id}/tasks`, {
             method: 'POST',
             headers: {
