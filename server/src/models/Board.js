@@ -16,7 +16,6 @@ const Board = sequelize.define('Board', {
   timestamps: false,
 });
 
-// Relación: Un tablero pertenece a un usuario temporal
 Board.belongsTo(TempUser, { foreignKey: 'owner_id', onDelete: 'CASCADE' });
 
 module.exports = Board;

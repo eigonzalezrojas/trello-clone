@@ -1,7 +1,7 @@
 const Task = require('../models/Task');
 const { zonedTimeToUtc } = require('date-fns-tz');
 
-// Obtener todas las tareas de un tablero
+// Get task by board
 exports.getTasksByBoard = async (req, res) => {
   try {
     const { board_id } = req.params;
@@ -13,7 +13,7 @@ exports.getTasksByBoard = async (req, res) => {
   }
 };
 
-// Crear una nueva tarea
+// Create task
 exports.createTask = async (req, res) => {
   try {
     const { board_id } = req.params;
@@ -37,7 +37,7 @@ exports.createTask = async (req, res) => {
   }
 };
 
-// Obtener una tarea por ID
+// Get task by ID
 exports.getTaskById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -52,7 +52,7 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
-// Actualizar una tarea
+// update task
 exports.updateTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -69,7 +69,7 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-// Eliminar una tarea
+// Delete task
 exports.deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -85,7 +85,7 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
-// Mover una tarea a otro tablero
+// Move task
 exports.moveTask = async (req, res) => {
   try {
     const { taskId } = req.params;

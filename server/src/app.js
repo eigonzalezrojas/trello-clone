@@ -44,7 +44,7 @@ app.use('/api', boardRoutes);
 // Routes of the tasks
 app.use('/api', taskRoutes);
 
-// Sincronización de la base de datos y servidor
+// Database and server synchronization
 sequelize.sync({ alter: true })
   .then(() => {
     const PORT = process.env.PORT || 5000;

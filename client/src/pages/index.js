@@ -225,20 +225,20 @@ function Home() {
 
   return (
       <div className="home-container">
-        <h1>Bienvenid@ a Trello Clone</h1>
+        <h1>Welcome to Trello Clone</h1>
         <div className="board-creation-section">
           <form onSubmit={handleCreateBoard}>
             <input
                 type="text"
                 value={boardName}
                 onChange={(e) => setBoardName(e.target.value)}
-                placeholder="Ingrese el nombre del tablero"
+                placeholder="Enter the name of the board"
             />
-            <button type="submit">Crear Tablero</button>
+            <button type="submit">Create Board</button>
           </form>
         </div>
         {loading ? (
-            <p>Cargando tableros...</p>
+            <p>Loading boards...</p>
         ) : error ? (
             <p>{error}</p>
         ) : (

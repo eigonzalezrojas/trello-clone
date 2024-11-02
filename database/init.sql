@@ -1,11 +1,11 @@
--- Usuarios temporales
+-- Temporary users
 CREATE TABLE IF NOT EXISTS temp_users (
     id SERIAL PRIMARY KEY,
     session_id VARCHAR(255) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tableros
+-- Board
 CREATE TABLE IF NOT EXISTS boards (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS boards (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tareas
+-- Task
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de sesiones
+-- Session
 CREATE TABLE IF NOT EXISTS sessions (
     sid VARCHAR NOT NULL COLLATE "default",
     sess JSON NOT NULL,

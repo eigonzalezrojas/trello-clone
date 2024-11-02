@@ -18,7 +18,7 @@ const tempUserSession = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.status(500).json({ error: 'Error en la creación de usuario temporal' });
+    res.status(500).json({ error: 'Error creating temporary user' });
   }
 };
 

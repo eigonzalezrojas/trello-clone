@@ -1,10 +1,10 @@
 const { TempUser } = require('../models');
 
-// Función para crear un usuario temporal si no existe
+// Create temporally user
 const createTempUser = async (req, res, next) => {
     let sessionId = req.sessionID;
 
-    // Verificar si el usuario temporal ya existe en la sesión
+    // Check user session
     let user = await TempUser.findOne({ where: { session_id: sessionId } });
 
     if (!user) {        

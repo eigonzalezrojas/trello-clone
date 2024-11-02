@@ -24,16 +24,16 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
     const [taskDescription, setTaskDescription] = useState('');
     const [tasks, setTasks] = useState(board.tasks || []);
 
-    // Actualizar las tareas cuando cambian en el board
+    // Update tasks when they change on the board
     useEffect(() => {
         setTasks(board.tasks || []);
     }, [board.tasks]);
 
-    // Funciones para el manejo del menú
+    // Functions for menu management
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
 
-    // Función para alternar el modal de creación de tareas
+    // Function to toggle task creation modal
     const toggleTaskModal = () => {
         setShowTaskModal(!showTaskModal);
         if (!showTaskModal) {
@@ -42,7 +42,7 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
         }
     };
 
-    // Función para crear una nueva tarea
+    // Function to create a new task
     const handleCreateTask = async () => {
         if (!taskTitle.trim()) return;
 
@@ -63,14 +63,14 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
                 onAddTask(board.id, newTask);
                 toggleTaskModal();
             } else {
-                throw new Error('Error al crear la tarea');
+                throw new Error('Error creating task');
             }
         } catch (error) {
-            console.error("Error al crear la tarea:", error);
+            console.error("Error creating task:", error);
         }
     };
 
-    // Función para actualizar una tarea
+    // Function to update a task
     const handleTaskUpdated = async (updatedTask) => {
         try {
             const response = await fetch(`/api/tasks/${updatedTask.id}`, {
@@ -91,14 +91,14 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
                     )
                 );
             } else {
-                throw new Error('Error al actualizar la tarea');
+                throw new Error('Error updating task');
             }
         } catch (error) {
-            console.error("Error al actualizar la tarea:", error);
+            console.error("Error updating task:", error);
         }
     };
 
-    // Función para eliminar una tarea
+    // Function to delete a task
     const handleTaskDeleted = async (taskId) => {
         try {
             await onTaskDeleted(taskId, board.id);
@@ -108,13 +108,13 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
         }
     };
 
-    // Función para manejar el movimiento de tareas
+    // Function to handle task movement
     const handleTaskMoved = (taskId, sourceBoardId, targetBoardId) => {
         if (sourceBoardId === board.id) {
-            // Remover la tarea del tablero de origen
+            // Remove the task from the source board
             setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
         } else if (targetBoardId === board.id) {
-            // Añadir la tarea al tablero de destino
+            // Add the task to the target board
             const movedTask = tasks.find(task => task.id === taskId);
             if (movedTask) {
                 setTasks(prevTasks => [...prevTasks, { ...movedTask, board_id: targetBoardId }]);
@@ -138,8 +138,8 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem onClick={() => { handleMenuClose(); onEdit(board.id); }}>Editar</MenuItem>
-                <MenuItem onClick={() => { handleMenuClose(); onDelete(board.id); }}>Eliminar</MenuItem>
+                <MenuItem onClick={() => { handleMenuClose(); onEdit(board.id); }}>Edit</MenuItem>
+                <MenuItem onClick={() => { handleMenuClose(); onDelete(board.id); }}>Delete</MenuItem>
             </Menu>
 
             <CardContent>
@@ -169,12 +169,12 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
             </CardActions>
 
             <Dialog open={showTaskModal} onClose={toggleTaskModal}>
-                <DialogTitle>Crear Nueva Tarea</DialogTitle>
+                <DialogTitle>Create new task</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Título"
+                        label="Title"
                         fullWidth
                         value={taskTitle}
                         onChange={(e) => setTaskTitle(e.target.value)}
@@ -182,7 +182,7 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
                     />
                     <TextField
                         margin="dense"
-                        label="Descripción"
+                        label="Description"
                         fullWidth
                         multiline
                         rows={4}
@@ -191,13 +191,13 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={toggleTaskModal}>Cancelar</Button>
+                    <Button onClick={toggleTaskModal}>Cancel</Button>
                     <Button
                         onClick={handleCreateTask}
                         variant="contained"
                         disabled={!taskTitle.trim()}
                     >
-                        Crear Tarea
+                        Create task
                     </Button>
                 </DialogActions>
             </Dialog>

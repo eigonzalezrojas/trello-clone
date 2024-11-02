@@ -1,6 +1,6 @@
 const Board = require('../models/Board');
 
-// Obtener todos los tableros
+// Get all boards
 exports.getAllBoards = async (req, res) => {
   try {
     const boards = await Board.findAll();
@@ -10,7 +10,7 @@ exports.getAllBoards = async (req, res) => {
   }
 };
 
-// Editar un tablero
+// Edit board
 exports.updateBoard = async (req, res) => {
   try {
     const { id } = req.params;
@@ -31,7 +31,7 @@ exports.updateBoard = async (req, res) => {
   }
 };
 
-// Crear un nuevo tablero
+// Create board
 exports.createBoard = async (req, res) => {
   try {
     const { name } = req.body;
@@ -52,7 +52,7 @@ exports.createBoard = async (req, res) => {
   }
 };
 
-// Eliminar un tablero
+// Delete board
 exports.deleteBoard = async (req, res) => {
   try {
     const { id } = req.params;

@@ -167,40 +167,40 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
                                 onClose={handleMenuClose}
                             >
                                 <MenuItem onClick={handleOpenEditModal}>
-                                    Editar
+                                    Edit
                                 </MenuItem>
                                 <MenuItem onClick={handleDeleteTask}>
-                                    Eliminar
+                                    Delete
                                 </MenuItem>
                             </Menu>
                         </CardContent>
                     </Card>
 
-                    {/* Modal para ver detalles */}
+                    {/* Modal to see details */}
                     <Dialog open={openModal} onClose={handleCloseModal}>
                         <DialogTitle>{task.title}</DialogTitle>
                         <DialogContent>
                             <Typography variant="body1">
-                                {task.description || "No hay descripción disponible"}
+                                {task.description || "No description available"}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ marginTop: 2 }}>
                                 Created: {createdDate}
                             </Typography>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleCloseModal}>Cerrar</Button>
+                            <Button onClick={handleCloseModal}>Close</Button>
                         </DialogActions>
                     </Dialog>
 
-                    {/* Modal para editar */}
+                    {/* Modal to edit */}
                     <Dialog open={openEditModal} onClose={handleCloseEditModal}>
                         <form onSubmit={handleEditSubmit}>
-                            <DialogTitle>Editar Tarea</DialogTitle>
+                            <DialogTitle>Edit task</DialogTitle>
                             <DialogContent>
                                 <TextField
                                     autoFocus
                                     margin="dense"
-                                    label="Título"
+                                    label="Title"
                                     type="text"
                                     fullWidth
                                     value={editFormData.title}
@@ -212,7 +212,7 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
                                 />
                                 <TextField
                                     margin="dense"
-                                    label="Descripción"
+                                    label="Description"
                                     type="text"
                                     fullWidth
                                     multiline
@@ -225,8 +225,8 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
                                 />
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseEditModal}>Cancelar</Button>
-                                <Button type="submit">Guardar</Button>
+                                <Button onClick={handleCloseEditModal}>Cancel</Button>
+                                <Button type="submit">Save</Button>
                             </DialogActions>
                         </form>
                     </Dialog>
