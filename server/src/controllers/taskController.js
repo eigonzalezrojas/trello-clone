@@ -59,13 +59,13 @@ exports.updateTask = async (req, res) => {
     const { title, description, status } = req.body;
     const task = await Task.findByPk(id);
     if (!task) {
-      return res.status(404).json({ error: 'Tarea no encontrada' });
+      return res.status(404).json({ error: 'Task not found' });
     }
     await task.update({ title, description, status });
     res.json(task);
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: 'Error al actualizar la tarea' });
+    res.status(500).json({ error: 'Error updating task' });
   }
 };
 

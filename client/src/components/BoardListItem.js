@@ -6,12 +6,10 @@ function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTask
     const onDragEnd = (result) => {
         const { source, destination, draggableId } = result;
 
-        // Si no hay destino, no hacemos nada
         if (!destination) {
             return;
         }
 
-        // Si la tarea se suelta en la misma posición del mismo tablero, no hacemos nada
         if (
             source.droppableId === destination.droppableId &&
             source.index === destination.index
@@ -22,7 +20,6 @@ function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTask
         const taskId = parseInt(draggableId, 10);
         const targetBoardId = parseInt(destination.droppableId, 10);
 
-        // Llamar a onMoveTask solo si realmente hay un cambio
         if (source.droppableId !== destination.droppableId) {
             onMoveTask(taskId, targetBoardId);
         }
@@ -32,13 +29,14 @@ function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTask
         <DragDropContext onDragEnd={onDragEnd}>
             <Grid container spacing={3} style={{ padding: '20px' }} justifyContent="center" alignItems="flex-start">
                 {boards.map((board) => (
-                    <Droppable key={board.id} droppableId={board.id.toString()}>
+                    <Droppable key={board.id} droppableId={String(board.id)}>
                         {(provided) => (
                             <Grid
                                 item
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
                                 sx={{ minWidth: 300 }}
+                                component="div"
                             >
                                 <BoardItem
                                     board={board}

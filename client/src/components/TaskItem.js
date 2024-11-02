@@ -32,9 +32,11 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
         event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
+
     const handleMenuClose = () => setAnchorEl(null);
 
     const handleOpenModal = () => setOpenModal(true);
+
     const handleCloseModal = () => setOpenModal(false);
 
     const handleOpenEditModal = () => {
@@ -73,6 +75,7 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
             }
         } catch (error) {
             console.error('Error updating task status:', error);
+            setIsDone(isDone);
         }
     };
 
@@ -120,21 +123,30 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
     });
 
     return (
-        <Draggable draggableId={task.id.toString()} index={index}>
+        <Draggable draggableId={String(task.id)} index={index}>
             {(provided) => (
                 <>
                     <Card
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        sx={{ maxWidth: 300, margin: 1, position: 'relative', cursor: 'pointer' }}
+                        sx={{
+                            maxWidth: 300,
+                            margin: 1,
+                            position: 'relative',
+                            cursor: 'pointer',
+                            opacity: isDone ? 0.7 : 1,
+                            backgroundColor: isDone ? '#f5f5f5' : 'white'
+                        }}
                         onClick={handleOpenModal}
+                        component="div"
                     >
                         <CardContent>
                             <Typography
                                 variant="h6"
                                 sx={{
                                     textDecoration: isDone ? 'line-through' : 'none',
+                                    color: isDone ? 'text.secondary' : 'text.primary',
                                 }}
                             >
                                 {task.title}
@@ -144,11 +156,12 @@ function TaskItem({ task, index, onTaskUpdated, onTaskDeleted, boardId }) {
                                 <Checkbox
                                     checked={isDone}
                                     onChange={handleStatusChange}
-                                    color="primary"
+                                    color={isDone ? "success" : "primary"}
                                     size="small"
+                                    onClick={(e) => e.stopPropagation()}
                                 />
                                 <Typography variant="body2" color="text.secondary">
-                                    Status: {isDone ? 'done' : 'pending'}
+                                    Status: {isDone ? 'Finished' : 'Pending'}
                                 </Typography>
                             </Box>
 
