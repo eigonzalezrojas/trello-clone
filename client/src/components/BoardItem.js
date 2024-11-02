@@ -14,6 +14,7 @@ import {
     DialogActions,
     TextField
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TaskItem from './TaskItem';
 
@@ -157,15 +158,13 @@ function BoardItem({ board, onEdit, onDelete, onAddTask, onTaskDeleted, onMoveTa
             </CardContent>
 
             <CardActions>
-                <Button
-                    fullWidth
-                    variant="contained"
+                <IconButton
                     color="primary"
                     onClick={toggleTaskModal}
                     sx={{ marginTop: 1 }}
                 >
-                    Add Task
-                </Button>
+                    <AddIcon />
+                </IconButton>
             </CardActions>
 
             <Dialog open={showTaskModal} onClose={toggleTaskModal}>

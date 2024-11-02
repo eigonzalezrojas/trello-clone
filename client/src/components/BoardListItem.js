@@ -62,7 +62,7 @@ function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTask
                                     {...provided.droppableProps}
                                     sx={{
                                         minWidth: 300,
-                                        minHeight: 100, // Altura mínima para cuando está vacío
+                                        minHeight: 100,
                                         padding: 1,
                                         border: highlightedBoardId === board.id ?
                                             '2px dashed #1976d2' :
