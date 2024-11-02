@@ -1,8 +1,11 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
+import Box from '@mui/material/Box';
 import BoardItem from "./BoardItem";
+import {useState} from "react";
 
 function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTaskDeleted }) {
+    const [highlightedBoardId, setHighlightedBoardId] = useState(null);
     const onDragEnd = (result) => {
         const { source, destination, draggableId } = result;
 
@@ -23,35 +26,73 @@ function BoardListItem({ boards, onEdit, onDelete, onAddTask, onMoveTask, onTask
         if (source.droppableId !== destination.droppableId) {
             onMoveTask(taskId, targetBoardId);
         }
+        setHighlightedBoardId(null);
+    };
+    const onDragEnter = (boardId) => {
+        setHighlightedBoardId(boardId);
+    };
+
+    const onDragLeave = () => {
+        setHighlightedBoardId(null);
     };
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
-            <Grid container spacing={3} style={{ padding: '20px' }} justifyContent="center" alignItems="flex-start">
+            <Grid2
+                container
+                spacing={3}
+                sx={{ padding: '20px' }}
+                justifyContent="center"
+                alignItems="flex-start"
+            >
                 {boards.map((board) => (
-                    <Droppable key={board.id} droppableId={String(board.id)}>
-                        {(provided) => (
-                            <Grid
-                                item
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                sx={{ minWidth: 300 }}
-                                component="div"
-                            >
-                                <BoardItem
-                                    board={board}
-                                    onEdit={onEdit}
-                                    onDelete={onDelete}
-                                    onAddTask={onAddTask}
-                                    onMoveTask={onMoveTask}
-                                    onTaskDeleted={onTaskDeleted}
-                                />
-                                {provided.placeholder}
-                            </Grid>
-                        )}
-                    </Droppable>
+                    <Grid2
+                        key={board.id}
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        lg={3}
+                    >
+                        <Droppable
+                            droppableId={String(board.id)}
+                        >
+                            {(provided, snapshot) => (
+                                <Box
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                    sx={{
+                                        minWidth: 300,
+                                        minHeight: 100, // Altura mínima para cuando está vacío
+                                        padding: 1,
+                                        border: highlightedBoardId === board.id ?
+                                            '2px dashed #1976d2' :
+                                            snapshot.isDraggingOver ?
+                                                '2px dashed #4caf50' :
+                                                'none',
+                                        borderRadius: 1,
+                                        transition: 'all 0.2s ease',
+                                        backgroundColor: snapshot.isDraggingOver ?
+                                            'rgba(76, 175, 80, 0.08)' :
+                                            'transparent'
+                                    }}
+                                    onDragEnter={() => onDragEnter(board.id)}
+                                    onDragLeave={onDragLeave}
+                                >
+                                    <BoardItem
+                                        board={board}
+                                        onEdit={onEdit}
+                                        onDelete={onDelete}
+                                        onAddTask={onAddTask}
+                                        onMoveTask={onMoveTask}
+                                        onTaskDeleted={onTaskDeleted}
+                                    />
+                                    {provided.placeholder}
+                                </Box>
+                            )}
+                        </Droppable>
+                    </Grid2>
                 ))}
-            </Grid>
+            </Grid2>
         </DragDropContext>
     );
 }
